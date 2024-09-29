@@ -54,6 +54,7 @@ type AppOpts struct {
 	LiveReload     bool
 	ServiceLocator *service.Locator
 	Register       func(app *App)
+	Domain         string
 }
 
 type App struct {
@@ -137,8 +138,9 @@ func (app *App) start() {
 	}
 
 	port := ":3000"
-	slog.Info(fmt.Sprintf("Server started on port %s", port))
-	err := http.ListenAndServe(port, app.Router)
+	url := app.Opts.Domain + port
+	slog.Info(fmt.Sprintf("Server started at %s", url))
+	err := http.ListenAndServe(url, app.Router)
 
 	if err != nil {
 		// If we are in watch mode, just try to kill any processes holding that port
